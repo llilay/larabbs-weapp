@@ -11,29 +11,34 @@
 
 <script>
 import wepy from 'wepy'
-import 'wepy-async-function'
-
-import { setStore } from 'wepy-redux'
-import configStore from './store'
-
-const store = configStore()
-setStore(store)
 
 export default class extends wepy.app {
   config = {
-    pages: [
-      'pages/index'
+    pages: [ // 小程序页面，所有的页面都需要定义在此才会生效
+      'pages/index',
+      'pages/user'
     ],
-    window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+    window: { // 默认页面的窗口表现
+      backgroundTextStyle: 'light', // 下拉 loading 的样式
+      navigationBarBackgroundColor: '#fff', // 导航栏背景颜色
+      navigationBarTitleText: 'LaraBBS', // 导航栏标题文字内容
+      navigationBarTextStyle: 'black' // 导航栏标题颜色，仅支持 black/white
+    },
+    tabBar: { // 小程序标签栏（tabBar）的表现，只能配置最少 2 个、最多 5 个 tab，tab 按数组的顺序排序
+      list: [{
+        pagePath: 'pages/index',
+        text: '首页',
+        iconPath: 'images/index.png',
+        selectedIconPath: 'images/index_selected.png'
+      }, {
+        pagePath: 'pages/user',
+        text: '我的',
+        iconPath: 'images/user.png',
+        selectedIconPath: 'images/user_selected.png'
+      }],
+      color: '#707070',
+      selectedColor: '#00b5ad'
     }
-  }
-
-  globalData = {
-    userInfo: null
   }
 
   constructor () {
@@ -42,33 +47,7 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
-    this.testAsync()
-  }
 
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
-
-  getUserInfo(cb) {
-    const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
-    }
-    wepy.getUserInfo({
-      success (res) {
-        that.globalData.userInfo = res.userInfo
-        cb && cb(res.userInfo)
-      }
-    })
   }
 }
 </script>
